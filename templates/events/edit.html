@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Editar Evento</h2>
+<form action="{{ url_for('events.edit_event', event_id=event.id) }}" method="POST">
+    Título: <input type="text" name="title" value="{{ event.title }}" required><br><br>
+    Descripción: <textarea name="description" required>{{ event.description }}</textarea><br><br>
+    Fecha actual: {{ event.date }}<br>
+    Cambiar Fecha: <input type="datetime-local" name="date"><br><br>
+    Cupo Máximo: <input type="number" name="capacity" value="{{ event.capacity }}" required><br><br>
+    Categoría: <input type="text" name="category" value="{{ event.category }}" required><br><br>
+    <button type="submit">Actualizar</button>
+</form>
+{% endblock %}

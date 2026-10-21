@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Mi Perfil</h2>
+
+<form action="{{ url_for('users.profile') }}" method="POST">
+    Nombre de Usuario: <input type="text" name="username" value="{{ current_user.username }}" required><br><br>
+    Biografía: <br>
+    <textarea name="bio" rows="4" cols="40">{{ current_user.bio }}</textarea><br><br>
+    <button type="submit">Guardar Cambios</button>
+</form>
+
+<hr>
+
+<h2>Mi Historial de Eventos</h2>
+<ul>
+    {% for event in history %}
+        <li>
+            <strong>{{ event.title }}</strong> ({{ event.category }}) - Fecha: {{ event.date }}
+        </li>
+    {% else %}
+        <li>No tienes eventos registrados en tu historial todavía.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

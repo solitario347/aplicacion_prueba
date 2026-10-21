@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Iniciar Sesión</h2>
+<form action="{{ url_for('auth.login') }}" method="POST">
+    Correo: <input type="email" name="email" required><br><br>
+    Contraseña: <input type="password" name="password" required><br><br>
+    <input type="checkbox" name="remember"> Recordarme<br><br>
+    <button type="submit">Ingresar</button>
+</form>
+{% endblock %}

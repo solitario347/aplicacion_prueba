@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Registro</h2>
+<form action="{{ url_for('auth.register') }}" method="POST">
+    Usuario: <input type="text" name="username" required><br><br>
+    Correo: <input type="email" name="email" required><br><br>
+    Contraseña: <input type="password" name="password" required><br><br>
+    Rol: 
+    <select name="role" required>
+        <option value="attendee">Asistente</option>
+        <option value="organizer">Organizador</option>
+    </select><br><br>
+    Biografía: <textarea name="bio"></textarea><br><br>
+    <button type="submit">Registrarse</button>
+</form>
+{% endblock %}

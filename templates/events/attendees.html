@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Inscritos en: {{ event.title }}</h2>
+<ul>
+    {% for reg in event.attendees %}
+        <li>{{ reg.user.username }} ({{ reg.user.email }}) - Inscrito el: {{ reg.registered_at }}</li>
+    {% else %}
+        <li>No hay usuarios inscritos todavía.</li>
+    {% endfor %}
+</ul>
+<br>
+<a href="{{ url_for('events.dashboard_organizer') }}">Volver al Panel</a>
+{% endblock %}

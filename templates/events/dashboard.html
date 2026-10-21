@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Mi Panel de Organizador</h2>
+<a href="{{ url_for('events.create_event') }}"><button>Crear Nuevo Evento</button></a>
+<br><br>
+{% for event in events %}
+    <div>
+        <h3>{{ event.title }}</h3>
+        <a href="{{ url_for('events.edit_event', event_id=event.id) }}"><button>Editar</button></a>
+        <a href="{{ url_for('events.view_attendees', event_id=event.id) }}"><button>Ver Inscritos</button></a>
+        
+        <form action="{{ url_for('events.delete_event', event_id=event.id) }}" method="POST" style="display:inline;">
+            <button type="submit" onclick="return confirm('¿Eliminar evento?')">Eliminar</button>
+        </form>
+    </div>
+    <hr>
+{% endfor %}
+{% endblock %}

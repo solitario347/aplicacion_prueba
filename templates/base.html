@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Eventos</title>
+    <style>
+        nav { background-color: #f8f9fa; padding: 15px; border-bottom: 1px solid #e3e6f0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        nav a { color: #4e73df; text-decoration: none; margin-right: 15px; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+        .logout-btn { color: #e74a3b; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div>
+            <a href="{{ url_for('events.list_events') }}">Eventos</a>
+        </div>
+        <div>
+            {% if current_user.is_authenticated %}
+                <span>Bienvenido, <strong>{{ current_user.username }}</strong> (<i>{{ current_user.role }}</i>)</span> | 
+                <a href="{{ url_for('users.profile') }}">Mi Perfil</a> | 
+                <a href="{{ url_for('auth.logout') }}" class="logout-btn">Cerrar Sesión</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Ingresar</a> | 
+                <a href="{{ url_for('auth.register') }}">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'danger' %}
+                    <p style="color: red;"><strong>[ERROR]:</strong> {{ message }}</p>
+                {% elif category == 'success' %}
+                    <p style="color: green;"><strong>[ÉXITO]:</strong> {{ message }}</p>
+                {% else %}
+                    <p style="color: blue;"><strong>[INFO]:</strong> {{ message }}</p>
+                {% endif %}
+            {% endfor %}
+            <hr>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
