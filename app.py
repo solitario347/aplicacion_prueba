@@ -1,6 +1,4 @@
-
 import os
-
 import pymysql
 from flask import (
     Flask,
@@ -13,26 +11,24 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "clave-solo-para-pruebas")
 
 
 def conectar():
     return pymysql.connect(
-        host=os.environ["DB_HOST"],
+        host=os.environ.get("DB_HOST", "127.0.0.1"),
         port=int(os.environ.get("DB_PORT", 3306)),
-        user=os.environ["DB_USER"],
-        password=os.environ["DB_PASSWORD"],
-        database=os.environ["DB_NAME"],
+        user=os.environ.get("DB_USER", "root"),
+        password=os.environ.get("DB_PASSWORD", ""),
+        database=os.environ.get("DB_NAME", "login_db"),
         cursorclass=pymysql.cursors.DictCursor,
     )
 
 
 def preparar_bd():
-    conexion = conectar()
-
     try:
+        conexion = conectar()
         with conexion.cursor() as cursor:
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS usuarios (
@@ -41,11 +37,10 @@ def preparar_bd():
                     clave VARCHAR(255) NOT NULL
                 )
             """)
-
         conexion.commit()
-
-    finally:
         conexion.close()
+    except Exception as e:
+        print(f"Advertencia BD local: {e}")
 
 
 @app.route("/")
@@ -59,8 +54,8 @@ def inicio():
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
-        usuario = request.form["usuario"].strip()
-        clave = request.form["clave"]
+        usuario = request.form.get("usuario", "").strip()
+        clave = request.form.get("clave", "")
 
         if not usuario or not clave:
             flash("Completa todos los campos")
@@ -71,24 +66,22 @@ def registro():
             return redirect(url_for("registro"))
 
         preparar_bd()
-        conexion = conectar()
-
         try:
+            conexion = conectar()
             with conexion.cursor() as cursor:
                 cursor.execute(
                     "INSERT INTO usuarios (usuario, clave) VALUES (%s, %s)",
                     (usuario, generate_password_hash(clave)),
                 )
-
             conexion.commit()
+            conexion.close()
             flash("Usuario registrado correctamente")
             return redirect(url_for("login"))
 
         except pymysql.err.IntegrityError:
             flash("Ese nombre de usuario ya existe")
-
-        finally:
-            conexion.close()
+        except Exception as e:
+            flash(f"Error al conectar con la base de datos: {e}")
 
     return render_template("registro.html")
 
@@ -96,27 +89,26 @@ def registro():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        usuario = request.form["usuario"].strip()
-        clave = request.form["clave"]
+        usuario = request.form.get("usuario", "").strip()
+        clave = request.form.get("clave", "")
 
         preparar_bd()
-        conexion = conectar()
-
+        resultado = None
         try:
+            conexion = conectar()
             with conexion.cursor() as cursor:
                 cursor.execute(
                     "SELECT * FROM usuarios WHERE usuario = %s",
                     (usuario,),
                 )
                 resultado = cursor.fetchone()
-
-        finally:
             conexion.close()
+        except Exception as e:
+            print(f"Error en login BD: {e}")
 
         if resultado and check_password_hash(resultado["clave"], clave):
             session.clear()
             session["usuario"] = resultado["usuario"]
-
             return redirect(url_for("inicio"))
 
         flash("Usuario o contraseña incorrectos")
@@ -131,8 +123,10 @@ def salir():
 
 
 if __name__ == "__main__":
+    puerto = int(os.environ.get("PORT", 8080))
+    print(f"\n Servidor corriendo localmente en: http://127.0.0.1:{puerto}\n")
     app.run(
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", 5000)),
-        debug=False,
+        host="127.0.0.1",
+        port=puerto,
+        debug=True,
     )

@@ -1,31 +1,49 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <title>Registro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Node // Dark Node</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 <body>
 
-    <h1>Crear usuario</h1>
+    <div class="gothic-card">
+        <div class="card-header">
+            <div class="animal-icon">🐺</div> 
+            <h1>Registro de Nodo</h1>
+            <p class="terminal-sub">root@sanctuary/register:~# <span class="blink">_</span></p>
+        </div>
 
-    {% with mensajes = get_flashed_messages() %} {% for mensaje in mensajes %}
-    <p>{{ mensaje }}</p>
-    {% endfor %} {% endwith %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <p class="flash-item">> {{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-    <form method="POST">
-        <label>Usuario</label>
-        <input name="usuario" required>
+        <form action="{{ url_for('registro') }}" method="POST">
+            <div class="form-group">
+                <label for="usuario">nuevo_usuario</label>
+                <input type="text" id="usuario" name="usuario" placeholder="nombre de usuario" required autocomplete="off">
+            </div>
 
-        <label>Contraseña</label>
-        <input type="password" name="clave" minlength="8" required>
+            <div class="form-group">
+                <label for="clave">clave_segura</label>
+                <input type="password" id="clave" name="clave" placeholder="mínimo 8 caracteres" required minlength="8">
+            </div>
 
-        <button type="submit">Registrarme</button>
-    </form>
+            <button type="submit" class="btn-submit">[ Crear Credencial ]</button>
+        </form>
 
-    <a href="{{ url_for('login') }}">Volver al login</a>
+        <div class="card-footer">
+            <p>¿Ya tienes nodo? <a href="{{ url_for('login') }}">Volver al login</a></p>
+        </div>
+    </div>
 
 </body>
-
 </html>

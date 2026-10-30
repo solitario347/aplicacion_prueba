@@ -1,19 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <title>Inicio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Active // Main Core</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 <body>
 
-    <h1>Bienvenido, {{ session["usuario"] }}</h1>
+    <div class="gothic-card">
+        <div class="card-header">
+            <div class="animal-icon">🦇</div> 
+            <h1>Sesión Iniciada</h1>
+            <p class="terminal-sub">status: authenticated // <span class="blink">online</span></p>
+        </div>
 
-    <p>Has iniciado sesión correctamente.</p>
+        <div class="form-group">
+            <p style="text-align: center; color: var(--accent-green); margin-bottom: 1.5rem;">
+                Bienvenido al núcleo, {{ session['usuario'] }}
+            </p>
+        </div>
 
-    <a href="{{ url_for('salir') }}">Cerrar sesión</a>
+        <a href="{{ url_for('salir') }}" style="text-decoration: none;">
+            <button type="button" class="btn-submit">[ Cerrar Sesión ]</button>
+        </a>
+    </div>
 
 </body>
-
 </html>
